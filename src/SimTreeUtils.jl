@@ -8,10 +8,14 @@ using DimensionalData
 using BSON
 using TOML
 
-export copyresults, findrelpaths, getparameters, simsnum, getsims, getsimspath
+using Dates
+using DuckDB
+
+export copyresults, findrelpaths, getparameters, simsnum, getsims, getsimspath, simlog
 
 include("simulation.jl")
 include("loaddata.jl")
 include("metaanalysis.jl")
+include("simlog.jl")
 
 end
