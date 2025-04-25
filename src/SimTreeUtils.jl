@@ -8,10 +8,11 @@ using DimensionalData
 using BSON
 using TOML
 
-using Dates
 using DuckDB
+using LokiLogger
+using Logging
 
-export copyresults, findrelpaths, getparameters, simsnum, getsims, getsimspath, simlog
+export copyresults, findrelpaths, getparameters, simsnum, getsims, getsimspath
 
 include("simulation.jl")
 include("loaddata.jl")

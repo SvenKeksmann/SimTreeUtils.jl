@@ -13,11 +13,24 @@ Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 Suppressor = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
 TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+LokiLogger = "51d429d1-9683-4c89-86d7-889f440454ef"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
+StructTypes = "856f2bd8-1eba-4b0a-8007-ebc267875bd4"
+URIs = "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4"
+
+[sources]
+LokiLogger = {rev = "master", url = "/home/svnwrsts/LokiLogger.jl"}
 
 [compat]
 Dates = "1.11.0"
 DuckDB = "1.2.2"
 julia = "1.7"
+HTTP = "1.10"
+JSON3 = "1"
+StructTypes = "1"
+URIs = "1"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
