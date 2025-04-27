@@ -49,7 +49,8 @@ function stsimulate(simulatefunction;savefile=true)
             SIMTREE_RESULTS_PATH = "$(pwd())/results"
         end
         starguments=TOML.parsefile("$SIMTREE_RESULTS_PATH/simtree_arguments.toml")
-        @info "starguments: " starguments
+        #@info "starguments: " starguments
+        print(starguments)
         
         if haskey(starguments, "s")
             str_seed = starguments["s"]
