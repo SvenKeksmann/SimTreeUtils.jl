@@ -12,7 +12,7 @@ using DuckDB
 using LokiLogger
 using Logging
 
-export copyresults, findrelpaths, getparameters, simsnum, getsims, getsimspath
+export copyresults, findrelpaths, getparameters, simsnum, getsims, getsimspath, simloginit
 
 include("simulation.jl")
 include("loaddata.jl")
