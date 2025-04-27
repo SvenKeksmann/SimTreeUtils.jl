@@ -37,10 +37,10 @@ $(TYPEDSIGNATURES)
 Wraps the function you want to run through SimTree simulate
 """
 function stsimulate(simulatefunction;savefile=true)
-    logger = simloginit()
-
-    Logging.with_logger(logger) do
+    
+    Logging.with_logger(simloginit()) do
         @info "Logger initialized!"
+    end
 
         if haskey(ENV, "SIMTREE_RESULTS_PATH")
             SIMTREE_RESULTS_PATH = ENV["SIMTREE_RESULTS_PATH"]
@@ -49,11 +49,8 @@ function stsimulate(simulatefunction;savefile=true)
             SIMTREE_RESULTS_PATH = "$(pwd())/results"
         end
         starguments=TOML.parsefile("$SIMTREE_RESULTS_PATH/simtree_arguments.toml")
-        if starguments == nothing
-            @warn "starguments empty"
-        else
-            @info "starguments: " starguments
-        end
+        @info "starguments: " starguments
+        
         if haskey(starguments, "s")
             str_seed = starguments["s"]
             @info "Seed is: " str_seed
@@ -78,7 +75,7 @@ function stsimulate(simulatefunction;savefile=true)
         if savefile
         BSON.bson("$SIMTREE_RESULTS_PATH/study.bson", results)
         end
-    end
+    #end
 
     return results
 end
