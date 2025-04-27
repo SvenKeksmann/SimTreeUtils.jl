@@ -37,7 +37,7 @@ $(TYPEDSIGNATURES)
 Wraps the function you want to run through SimTree simulate
 """
 function stsimulate(simulatefunction;savefile=true)
-    logger = simlogint()
+    logger = simloginit()
 
     Logging.with_logger(logger) do
         @info "Logger initialized!"
