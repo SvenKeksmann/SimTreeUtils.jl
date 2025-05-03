@@ -40,7 +40,6 @@ function stsimulate(simulatefunction;savefile=true)
     
     Logging.with_logger(simloginit()) do
         @info "Logger initialized!"
-    end
 
         if haskey(ENV, "SIMTREE_RESULTS_PATH")
             SIMTREE_RESULTS_PATH = ENV["SIMTREE_RESULTS_PATH"]
@@ -76,7 +75,7 @@ function stsimulate(simulatefunction;savefile=true)
         if savefile
         BSON.bson("$SIMTREE_RESULTS_PATH/study.bson", results)
         end
-    #end
+    end
 
     return results
 end
