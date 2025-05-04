@@ -1,3 +1,3 @@
-function simloginit() 
-    return LokiLogger.Logger(LokiLogger.json, "http://netlabdesk5:3100"; labels=Dict("host" => gethostname(), "app" => "LokiLogger.jl"))
+function simloginit(app;endpoint="http://netlabdesk5:3100") 
+    return LokiLogger.Logger(LokiLogger.json, endpoint; labels=Dict("host" => gethostname(), "app" => app, "lokiLogger" => "LokiLogger.jl"))
 end
