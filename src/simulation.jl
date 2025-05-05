@@ -38,7 +38,7 @@ Wraps the function you want to run through SimTree simulate
 """
 function stsimulate(simulatefunction;savefile=true)
     
-    Logging.with_logger(simloginit()) do
+    Logging.with_logger(simloginit("testing")) do
         @info "Logger initialized!"
 
         if haskey(ENV, "SIMTREE_RESULTS_PATH")
