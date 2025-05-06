@@ -24,7 +24,13 @@ function _simloginit(
     status::String,
     labels::Dict{String, String})::LokiLogger.Logger
 
+    if haskey(ENV, "USERNAME")
+        user = ENV["USERNAME"]
+    else
+        user = "none"
+    end
+
     return LokiLogger.Logger(LokiLogger.json, endpoint; 
-        labels=Dict("host" => gethostname(), "user" => getuser(), "lokiLogger" => "LokiLogger.jl", "app" => app, "status" => status,
+        labels=Dict("host" => gethostname(), "user" => user, "lokiLogger" => "LokiLogger.jl", "app" => app, "status" => status,
             [(k => v) for (k, v) in labels]...))
 end
