@@ -25,9 +25,9 @@ function _simloginit(
     labelsDict::Dict{String, String})::LokiLogger.Logger
 
     if haskey(ENV, "USERNAME")
-        user = ENV["USERNAME"]
+        user = string(ENV["USERNAME"])
     else
-        user = run(`whoami`)
+        user = string(run(`whoami`))
     end
 
     return LokiLogger.Logger(LokiLogger.json, endpoint; 
