@@ -15,14 +15,14 @@ function simloginit(
 
     return _simloginit(endpoint, app, "prod",
         Dict{String, String}("SEED" => string(SEED), "datapath" => datapath,
-            [(k => string(v)) for (k, v) in PARAMSDICT]...))
+            ((k => string(v)) for (k, v) in PARAMSDICT)...))
 end
 
 function _simloginit(
     endpoint::String,
     app::String,
     status::String,
-    labels::Dict{String, String})::LokiLogger.Logger
+    labelsDict::Dict{String, String})::LokiLogger.Logger
 
     if haskey(ENV, "USERNAME")
         user = ENV["USERNAME"]
@@ -32,5 +32,5 @@ function _simloginit(
 
     return LokiLogger.Logger(LokiLogger.json, endpoint; 
         labels=Dict{String, String}("host" => gethostname(), "user" => user, "lokiLogger" => "LokiLogger.jl", "app" => app, "status" => status,
-            [(k => v) for (k, v) in labels]...))
+            ((k => v) for (k, v) in labelsDict)...))
 end
