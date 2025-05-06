@@ -36,10 +36,9 @@ $(TYPEDSIGNATURES)
 
 Wraps the function you want to run through SimTree simulate
 """
-function stsimulate(simulatefunction;savefile=true)
-    Logging.with_logger(simloginit("testing")) do
-        @info "Logger initialized!"
-    end
+function stsimulate(app::String, simulatefunction;savefile=true)
+    Logging.with_logger(simloginit(app)) do
+        @debug "Init-Logger initialized!"
 
         if haskey(ENV, "SIMTREE_RESULTS_PATH")
             SIMTREE_RESULTS_PATH = ENV["SIMTREE_RESULTS_PATH"]
@@ -72,12 +71,18 @@ function stsimulate(simulatefunction;savefile=true)
         end
         PARAMSDICT["stresultspath"]=SIMTREE_RESULTS_PATH
         @show PARAMSDICT
-        results = simulatefunction(PARAMSDICT, SEED,datapath)
+        @debug "Init-Logger closed"
+    end
+
+    Logging.with_logger(simloginit(app, PARAMSDICT, SEED, datapath)) do
+        @debug "Prod-Logger initialized!"
+        results = simulatefunction(PARAMSDICT, SEED, datapath)
         # @show results
         if savefile
-        BSON.bson("$SIMTREE_RESULTS_PATH/study.bson", results)
+            BSON.bson("$SIMTREE_RESULTS_PATH/study.bson", results)
         end
-    #end
+        @debug "Prod-Logger closed"
+    end
 
     return results
 end
