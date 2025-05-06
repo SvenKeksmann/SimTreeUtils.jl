@@ -9,12 +9,12 @@ end
 function simloginit(
     app::String,
     PARAMSDICT::Dict{String, Any},
-    SEED::String,
+    SEED::Int,
     datapath::String
     ;endpoint::String="http://netlabdesk5:3100")::LokiLogger.Logger
 
     return _simloginit(endpoint, app, "prod",
-        Dict{String, String}("SEED" => SEED, "datapath" => datapath,
+        Dict{String, String}("SEED" => string(SEED), "datapath" => datapath,
             [(k => string(v)) for (k, v) in PARAMSDICT]...))
 end
 
@@ -27,7 +27,7 @@ function _simloginit(
     if haskey(ENV, "USERNAME")
         user = ENV["USERNAME"]
     else
-        user = "none"
+        user = run(`whoami`)
     end
 
     return LokiLogger.Logger(LokiLogger.json, endpoint; 
