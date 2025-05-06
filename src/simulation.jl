@@ -50,21 +50,25 @@ function stsimulate(app::String, simulatefunction; savefile=true)
             @warn "Now resultspath set using $(pwd())/results"
             SIMTREE_RESULTS_PATH = "$(pwd())/results"
         end
+        @info "SIMTREE_RESULTS_PATH: " * SIMTREE_RESULTS_PATH
+
         starguments=TOML.parsefile("$SIMTREE_RESULTS_PATH/simtree_arguments.toml")
         if starguments == nothing
             @warn "starguments empty"
         else
-            @info "starguments: " starguments
+            @info "starguments: " * starguments
         end
+
         if haskey(starguments, "s")
             str_seed = starguments["s"]
-            @info "Seed is: " str_seed
+            @info "Seed is: " * str_seed
 
             SEED = parse(Int, str_seed)
         else
             @warn "Seed not set from ST using 0"
             SEED = 0
         end
+
         # INFO: This file has the definition from PARAMSDICT
         include("$SIMTREE_RESULTS_PATH/$(starguments["p"])")
         if haskey(starguments, "DATA_PATH")
@@ -73,6 +77,8 @@ function stsimulate(app::String, simulatefunction; savefile=true)
             @warn "Datapath not set using pwd/data"
             datapath = "$(pwd())/data"
         end
+        @info "datapath: " * datapath
+
         PARAMSDICT["stresultspath"]=SIMTREE_RESULTS_PATH
         @show PARAMSDICT
         @debug "Init-Logger closed"
