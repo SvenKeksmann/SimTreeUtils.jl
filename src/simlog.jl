@@ -31,6 +31,6 @@ function _simloginit(
     end
 
     return LokiLogger.Logger(LokiLogger.json, endpoint; 
-        labels=Dict("host" => gethostname(), "user" => user, "lokiLogger" => "LokiLogger.jl", "app" => app, "status" => status,
+        labels=Dict{String, String}("host" => gethostname(), "user" => user, "lokiLogger" => "LokiLogger.jl", "app" => app, "status" => status,
             [(k => v) for (k, v) in labels]...))
 end
