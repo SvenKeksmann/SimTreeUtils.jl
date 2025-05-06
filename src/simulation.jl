@@ -36,7 +36,7 @@ $(TYPEDSIGNATURES)
 
 Wraps the function you want to run through SimTree simulate
 """
-function stsimulate(app::String, simulatefunction;savefile=true)
+function stsimulate(app::String, simulatefunction; savefile=true)
     Logging.with_logger(simloginit(app)) do
         @debug "Init-Logger initialized!"
 

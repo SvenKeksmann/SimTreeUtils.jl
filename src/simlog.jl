@@ -3,7 +3,7 @@ function simloginit(
     ;endpoint::String="http://netlabdesk5:3100")::LokiLogger.Logger
 
     
-    return _simloginit(endpoint, app, "initializing", Dict())
+    return _simloginit(endpoint, app, "initializing", Dict{String, String}())
 end
 
 function simloginit(
@@ -14,7 +14,7 @@ function simloginit(
     ;endpoint::String="http://netlabdesk5:3100")::LokiLogger.Logger
 
     return _simloginit(endpoint, app, "prod",
-        Dict("SEED" => SEED, "datapath" => datapath,
+        Dict{String, String}("SEED" => SEED, "datapath" => datapath,
             [(k => string(v)) for (k, v) in PARAMSDICT]...))
 end
 
