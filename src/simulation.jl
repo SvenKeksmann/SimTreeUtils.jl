@@ -39,7 +39,8 @@ Wraps the function you want to run through SimTree simulate
 function stsimulate(app::String, simulatefunction; savefile=true)
     SEED = -1
     datapath = ""
-    
+    SIMTREE_RESULTS_PATH = ""
+
     Logging.with_logger(simloginit(app)) do
         @debug "Init-Logger initialized!"
 
@@ -77,6 +78,7 @@ function stsimulate(app::String, simulatefunction; savefile=true)
         @debug "Init-Logger closed"
     end
 
+    results = nothing
     Logging.with_logger(simloginit(app, PARAMSDICT, SEED, datapath)) do
         @debug "Prod-Logger initialized!"
         results = simulatefunction(PARAMSDICT, SEED, datapath)

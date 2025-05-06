@@ -24,6 +24,7 @@ function _simloginit(
     status::String,
     labelsDict::Dict{String, String})::LokiLogger.Logger
 
+
     return LokiLogger.Logger(LokiLogger.json, endpoint; 
         labels=Dict{String, String}("host" => gethostname(), "user" => Sys.username(), "lokiLogger" => "LokiLogger.jl", "app" => app, "status" => status,
             ((k => v) for (k, v) in labelsDict)...))
