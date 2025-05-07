@@ -60,8 +60,8 @@ function ViewDBSchema(database::stDataBase; limit::Integer=8)::nothing
             schema = DBInterface.execute(database.con, "DESCRIBE $(table)") |> DataFrame
             println(schema)
 
-            result = DBInterface.execute(database.con, "SELECT * FROM $(table) LIMIT $(limit);")
-            display(DataFrame(result))
+            #result = DBInterface.execute(database.con, "SELECT * FROM $(table) LIMIT $(limit);")
+            #display(DataFrame(result))
         end
     end
 end
