@@ -5,6 +5,7 @@ version = "0.1.1"
 
 [deps]
 BSON = "fbb218c0-5317-5bc6-957e-2ee96dd4b1f0"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DimensionalData = "0703355e-b756-11e9-17c0-8b28908087d0"
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 DuckDB = "d2f5444f-75bc-4fdf-ac35-56f514c445e1"
@@ -17,6 +18,7 @@ TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 
 [compat]
 BSON = "0.3.9"
+DataFrames = "1.7.0"
 DimensionalData = "0.29.16"
 DocStringExtensions = "0.9.4"
 DuckDB = "1.2.2"
