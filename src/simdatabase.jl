@@ -1,5 +1,5 @@
 struct stDataBase
-    dbFile::string,
+    dbFile::String,
     con::DBInterface.Connection,
     simulationprefix::String
 end
@@ -8,7 +8,7 @@ function OpenDatabase(datapath::String, dbname::String)
     dbFile = "$datapath/$dbname.duckdb"
     con = DBInterface.connect(DuckDB.DB, dbFile)
 
-    return stDataBase(dbFile = dbFile, con = con, simulationprefix=nothing)
+    return stDataBase(dbFile, con, nothing)
 end
 
 function CloseDataBase(database::stDataBase)::nothing
