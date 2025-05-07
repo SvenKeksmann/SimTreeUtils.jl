@@ -13,6 +13,7 @@ end
 
 function CloseDataBase(database::stDataBase)::nothing
     DBInterface.close(database.con)
+    return nothing
 end
 
 function CreateBaseTable(
