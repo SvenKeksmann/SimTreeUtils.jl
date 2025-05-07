@@ -92,7 +92,8 @@ function stsimulate(app::String, simulatefunction; savefile=true)
         database = CreateBaseTable(OpenDatabase(datapath, "test"), PARAMSDICT, SEED, datapath)
         results = simulatefunction(database, PARAMSDICT, SEED, datapath)
         ViewDBSchema(database)
-        database = CloseDataBase(database)
+        CloseDataBase(database)
+        database = nothing
 
         # @show results
         if savefile

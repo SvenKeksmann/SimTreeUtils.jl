@@ -11,9 +11,8 @@ function OpenDatabase(datapath::String, dbname::String)
     return stDataBase(dbFile, con, "")
 end
 
-function CloseDataBase(database::stDataBase)::nothing
+function CloseDataBase(database::stDataBase)
     DBInterface.close(database.con)
-    return nothing
 end
 
 function CreateBaseTable(
