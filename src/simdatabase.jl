@@ -47,7 +47,7 @@ function CreateTable(database::stDataBase,
     DBInterface.execute(database.con, "CREATE TABLE IF NOT EXISTS $tableName ($createColumns)")
 end
 
-function ViewDBSchema(database::stDataBase; limit::Integer=8)::nothing
+function ViewDBSchema(database::stDataBase; limit::Integer=8)
     tables = DBInterface.execute(database.con, "SHOW ALL TABLES") |> DataFrame
     println(tables)
     for tableRow in eachrow(tables)
@@ -60,8 +60,8 @@ function ViewDBSchema(database::stDataBase; limit::Integer=8)::nothing
             schema = DBInterface.execute(database.con, "DESCRIBE $(table)") |> DataFrame
             println(schema)
 
-            #result = DBInterface.execute(database.con, "SELECT * FROM $(table) LIMIT $(limit);")
-            #display(DataFrame(result))
+            result = DBInterface.execute(database.con, "SELECT * FROM $(table) LIMIT $(limit);")
+            display(DataFrame(result))
         end
     end
 end
