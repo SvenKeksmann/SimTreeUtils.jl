@@ -1,6 +1,6 @@
 struct stDataBase
-    dbFile::String,
-    con::DBInterface.Connection,
+    dbFile::String
+    con::DBInterface.Connection
     simulationprefix::String
 end
 
