@@ -1,4 +1,4 @@
-struct stDataBase
+mutable struct stDataBase
     dbFile::String
     con::DBInterface.Connection
     simulationprefix::String
