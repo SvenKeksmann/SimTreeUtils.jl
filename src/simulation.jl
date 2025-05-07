@@ -56,7 +56,7 @@ function stsimulate(app::String, simulatefunction; savefile=true)
         if starguments == nothing
             @warn "starguments empty"
         else
-            @info "starguments: " * starguments
+            @info "starguments: " * string(starguments)
         end
 
         if haskey(starguments, "s")
@@ -87,7 +87,13 @@ function stsimulate(app::String, simulatefunction; savefile=true)
     results = nothing
     Logging.with_logger(simloginit(app, PARAMSDICT, SEED, datapath)) do
         @debug "Prod-Logger initialized!"
-        results = simulatefunction(PARAMSDICT, SEED, datapath)
+
+        #TEmporary DB Create in study.jl/data (datapath)
+        database = CreateBaseTable(OpenDatabase(datapath, "test"), PARAMSDICT, SEED, datapath)
+        results = simulatefunction(database, PARAMSDICT, SEED, datapath)
+        ViewDBSchema(database)
+        CloseDataBase(database)
+
         # @show results
         if savefile
             BSON.bson("$SIMTREE_RESULTS_PATH/study.bson", results)
