@@ -8,7 +8,7 @@ function OpenDatabase(datapath::String, dbname::String)
     dbFile = "$datapath/$dbname.duckdb"
     con = DBInterface.connect(DuckDB.DB, dbFile)
 
-    return stDataBase(dbFile, con, nothing)
+    return stDataBase(dbFile, con, "")
 end
 
 function CloseDataBase(database::stDataBase)::nothing
