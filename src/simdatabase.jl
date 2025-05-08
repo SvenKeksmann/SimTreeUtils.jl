@@ -70,7 +70,7 @@ function AddTableColumn(table::stDataTable, column::String, columntype::Type)::s
     return table
 end
 
-function AddRow(table::stDataTable, data::Vector{Any})
+function AddRow(table::stDataTable, data::Vector)
     #frame = DataFrame(;[Symbol(k)=>v for (k,v) in data]...)
 
     colums = join([v for (v) in data], ", ")
