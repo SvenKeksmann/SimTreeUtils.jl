@@ -62,7 +62,7 @@ end
 function AddTableColumn(table::stDataTable, column::String, columntype::Type)::stDataTable
     sqltype = get(julia_to_sql, columntype, "TEXT")
 
-    DBInterface.execute(table.database.con, "ALTER TABLE $(table.tableName) CREATE COLUMN IF NOT EXISTS $column $sqltype")
+    DBInterface.execute(table.database.con, "ALTER TABLE $(table.tableName) ADD COLUMN IF NOT EXISTS $column $sqltype")
 
     if !haskey(table.columns, column)
         table.columns[column] = columntype
