@@ -5,7 +5,7 @@ mutable struct stDataBase
 end
 mutable struct stDataTable
     database::stDataBase
-    tablename::String
+    tableName::String
     columns::Dict{String, Type}
 end
 
@@ -68,6 +68,12 @@ function AddTableColumn(table::stDataTable, column::String, columntype::Type)::s
         table.columns[column] = columntype
     end
     return table
+end
+
+function AddRow(table::stDataTable, data::Dict{String, Any})
+    #frame = DataFrame(;[Symbol(k)=>v for (k,v) in data]...)
+
+    DBInterface.execute(table.database.con, "INSERT INTO $(table.tableName) VALUES($([v for (k,v) in data]))")
 end
 
 function ViewDBSchema(database::stDataBase; limit::Integer=8)
