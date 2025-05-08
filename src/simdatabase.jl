@@ -73,7 +73,7 @@ end
 function AddRow(table::stDataTable, data::Vector)
     #frame = DataFrame(;[Symbol(k)=>v for (k,v) in data]...)
 
-    colums = join([v for (v) in data], ", ")
+    columns = join([v for (v) in data], ", ")
     DBInterface.execute(table.database.con, "INSERT INTO $(table.tableName) VALUES($columns)")
 end
 
