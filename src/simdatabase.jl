@@ -3,6 +3,11 @@ mutable struct stDataBase
     con::DBInterface.Connection
     simulationprefix::String
 end
+mutable struct stDataTable
+    database::stDataBase
+    tablename::String
+    columns::Dict{String, Type}
+end
 
 function OpenDatabase(datapath::String, dbname::String)
     dbFile = "$datapath/$dbname.duckdb"
@@ -40,11 +45,29 @@ const julia_to_sql = Dict(
 
 function CreateTable(database::stDataBase,
     tableName::String,
-    columns::Dict{String, Type})
+    columns::Dict{String, Type})::stDataTable
 
     createColumns = join(["$k $(get(julia_to_sql, v, "TEXT"))" for (k, v) in columns], ", ")
 
     DBInterface.execute(database.con, "CREATE TABLE IF NOT EXISTS $tableName ($createColumns)")
+
+    datatable = stDataTable(database, tableName, columns)
+    #Alter Table & Create new Columns, if TABLE exists
+    for (k, v) in columns
+        datatable = AddTableColumn(datatable, k, v)
+    end
+    return datatable
+end
+
+function AddTableColumn(table::stDataTable, column::String, columntype::Type)::stDataTable
+    sqltype = get(julia_to_sql, columntype, "TEXT")
+
+    DBInterface.execute(table.database.con, "ALTER TABLE $tableName CREATE COLUMN IF NOT EXISTS $column $sqltype")
+
+    if !haskey(table.columns, column)
+        table.columns[column] = columntype
+    end
+    return table
 end
 
 function ViewDBSchema(database::stDataBase; limit::Integer=8)
