@@ -70,10 +70,11 @@ function AddTableColumn(table::stDataTable, column::String, columntype::Type)::s
     return table
 end
 
-function AddRow(table::stDataTable, data::Dict{String, Any})
+function AddRow(table::stDataTable, data::Vector{Any})
     #frame = DataFrame(;[Symbol(k)=>v for (k,v) in data]...)
 
-    DBInterface.execute(table.database.con, "INSERT INTO $(table.tableName) VALUES($([v for (k,v) in data]))")
+    colums = join([v for (v) in data], ", ")
+    DBInterface.execute(table.database.con, "INSERT INTO $(table.tableName) VALUES($columns)")
 end
 
 function ViewDBSchema(database::stDataBase; limit::Integer=8)
