@@ -79,14 +79,15 @@ function AddRow(table::stDataTable, data::Vector)
     DBInterface.execute(table.database.con, "INSERT INTO $(table.tableName) VALUES($columns)")
 end
 
-function SelectData(datapath::String, dbname::String, table::String; limit::Integer=8)
+function SelectData(datapath::String, dbname::String, table::String; limit::Integer=8)::DataFrame
     database = OpenDatabase(datapath::String, dbname::String)
-    SelectData(database, table, limit)
+    data = SelectData(database, table, limit)
     CloseDataBase(database)
+    display(data)
+    return data
 end
-function SelectData(database::stDataBase, table::String; limit::Interger=8)
-    result = DBInterface.execute(database.con, "SELECT * FROM $(table) LIMIT $(limit);")
-    display(DataFrame(result))
+function SelectData(database::stDataBase, table::String; limit::Interger=8)::DataFrame
+    return DBInterface.execute(database.con, "SELECT * FROM $(table) LIMIT $(limit);") |> DataFrames.DataFrame
 end
 
 function ViewDBSchema(datapath::String, dbname::String)
