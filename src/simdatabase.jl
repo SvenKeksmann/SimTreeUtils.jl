@@ -86,7 +86,7 @@ function SelectData(datapath::String, dbname::String, table::String; limit::Inte
     display(data)
     return data
 end
-function SelectData(database::stDataBase, table::String; limit::Interger=8)::DataFrame
+function SelectData(database::stDataBase, table::String; limit::Integer=8)::DataFrame
     return DBInterface.execute(database.con, "SELECT * FROM $(table) LIMIT $(limit);") |> DataFrames.DataFrame
 end
 
