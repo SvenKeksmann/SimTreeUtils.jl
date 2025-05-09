@@ -91,7 +91,6 @@ function stsimulate(app::String, simulatefunction; savefile=true)
         #TEmporary DB Create in study.jl/data (datapath)
         database = CreateBaseTable(OpenDatabase(datapath, "test"), PARAMSDICT, SEED, datapath)
         results = simulatefunction(database, PARAMSDICT, SEED, datapath)
-        ViewDBSchema(database)
         CloseDataBase(database)
         database = nothing
 

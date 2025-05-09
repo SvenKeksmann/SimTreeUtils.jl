@@ -36,7 +36,9 @@ function CreateBaseTable(
 end
 
 const julia_to_sql = Dict(
+    Int32   => "INTEGER",
     Int64   => "INTEGER",
+    Float32 => "REAL",
     Float64 => "REAL",
     String  => "TEXT",
     Bool    => "BOOLEAN",
@@ -77,7 +79,22 @@ function AddRow(table::stDataTable, data::Vector)
     DBInterface.execute(table.database.con, "INSERT INTO $(table.tableName) VALUES($columns)")
 end
 
-function ViewDBSchema(database::stDataBase; limit::Integer=8)
+function SelectData(datapath::String, dbname::String, table::String; limit::Integer=8)
+    database = OpenDatabase(datapath::String, dbname::String)
+    SelectData(database, table, limit)
+    CloseDataBase(database)
+end
+function SelectData(database::stDataBase, table::String; limit::Interger=8)
+    result = DBInterface.execute(database.con, "SELECT * FROM $(table) LIMIT $(limit);")
+    display(DataFrame(result))
+end
+
+function ViewDBSchema(datapath::String, dbname::String)
+    database = OpenDatabase(datapath::String, dbname::String)
+    ViewDBSchema(database)
+    CloseDataBase(database)
+end
+function ViewDBSchema(database::stDataBase)
     tables = DBInterface.execute(database.con, "SHOW ALL TABLES") |> DataFrame
     println(tables)
     for tableRow in eachrow(tables)
@@ -89,9 +106,6 @@ function ViewDBSchema(database::stDataBase; limit::Integer=8)
             
             schema = DBInterface.execute(database.con, "DESCRIBE $(table)") |> DataFrame
             println(schema)
-
-            result = DBInterface.execute(database.con, "SELECT * FROM $(table) LIMIT $(limit);")
-            display(DataFrame(result))
         end
     end
 end
