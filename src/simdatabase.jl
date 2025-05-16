@@ -1,6 +1,6 @@
 mutable struct stDataBase
     dbFile::String
-    con::DBInterface.Connection
+    con::Union{DBInterface.Connection, Nothing}
     simulationprefix::String
 end
 mutable struct stDataTable
@@ -9,15 +9,32 @@ mutable struct stDataTable
     columns::Dict{String, Type}
 end
 
-function OpenDatabase(datapath::String, dbname::String)
+function OpenDatabase(datapath::String, dbname::String)::stDataBase
     dbFile = "$datapath/$dbname.duckdb"
     con = DBInterface.connect(DuckDB.DB, dbFile)
 
     return stDataBase(dbFile, con, "")
 end
+function OpenInMemoryDB()::stDataBase
+    dbFile = ":memory:"
+    con = DBInterface.connect(DuckDB.DB, dbFile)
 
-function CloseDataBase(database::stDataBase)
+    return stDataBase(dbFile, con, "")
+end
+function CloseDataBase(database::stDataBase; datapath::String="", dbname::String="")
+    if database.dbFile == ":memory:"
+        if datapath=="" || dbname==""
+            @error "InMemory-Data will be Lost!"
+        else
+            database.dbFile = "$datapath/$dbname.duckdb"
+            DBInterface.execute(database.con, "ATTACH '$(database.dbFile)'")
+            DBInterface.execute(database.con, "COPY FROM DATABASE memory TO $dbname")
+            DBInterface.execute(database.con, "DETACH $dbname")
+        end
+        #implement DB Save
+    end
     DBInterface.close(database.con)
+    database.con = nothing
 end
 
 function CreateBaseTable(
@@ -73,23 +90,22 @@ function AddTableColumn(table::stDataTable, column::String, columntype::Type)::s
 end
 
 function AddRow(table::stDataTable, data::Vector)
-    #frame = DataFrame(;[Symbol(k)=>v for (k,v) in data]...)
-
     columns = join([v for (v) in data], ", ")
     DBInterface.execute(table.database.con, "INSERT INTO $(table.tableName) VALUES($columns)")
 end
 
-function SelectData(datapath::String, dbname::String, table::String; limit::Integer=8)::DataFrame
+#Aufruf SelectData mit Open/Close-DB
+function SelectData(datapath::String, dbname::String, table::String; limit::Integer=8, Columns::String="*")::DataFrame
     database = OpenDatabase(datapath::String, dbname::String)
-    data = SelectData(database, table, limit)
+    data = SelectData(database, table; limit, Columns)
     CloseDataBase(database)
-    display(data)
     return data
 end
-function SelectData(database::stDataBase, table::String; limit::Integer=8)::DataFrame
-    return DBInterface.execute(database.con, "SELECT * FROM $(table) LIMIT $(limit);") |> DataFrames.DataFrame
+function SelectData(database::stDataBase, table::String; limit::Integer=8, Columns::String="*")::DataFrame
+    return DBInterface.execute(database.con, "SELECT $(Columns) FROM $(table) LIMIT $(limit);") |> DataFrames.DataFrame
 end
 
+#Aufruf ViewDBSchema mit Open/Close-DB
 function ViewDBSchema(datapath::String, dbname::String)
     database = OpenDatabase(datapath::String, dbname::String)
     ViewDBSchema(database)
@@ -109,4 +125,14 @@ function ViewDBSchema(database::stDataBase)
             println(schema)
         end
     end
+end
+
+#Temporary easy plotting function
+function plotXY(datapath::String, dbname::String, table::String, colX::String, colY::Matrix{String}; limit::Integer=8)
+    database = OpenDatabase(datapath::String, dbname::String)
+    x = SelectData(database, table; limit, Columns=colX)
+    y = SelectData(database, table; limit, Columns=join(colY, ", "))
+    CloseDataBase(database)
+    
+    Plots.plot(Matrix(x), Matrix(y), title="$dbname/$table", labels=colY, xlabel="$colX")
 end

@@ -12,6 +12,9 @@ using DuckDB
 using DataFrames
 using LokiLogger
 using Logging
+using JSON3
+
+using Plots
 
 export copyresults, findrelpaths, getparameters, simsnum, getsims, getsimspath
 

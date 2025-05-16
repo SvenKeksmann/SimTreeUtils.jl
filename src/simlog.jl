@@ -1,19 +1,21 @@
 function simloginit(
     app::String,
+    status::String = "initializing"
     ;endpoint::String="http://netlabdesk5:3100")::LokiLogger.Logger
 
     
-    return _simloginit(endpoint, app, "initializing", Dict{String, String}())
+    return _simloginit(endpoint, app, status, Dict{String, String}())
 end
 
 function simloginit(
     app::String,
     PARAMSDICT::Dict{String, Any},
     SEED::Int,
-    datapath::String
+    datapath::String,
+    status::String="prod"
     ;endpoint::String="http://netlabdesk5:3100")::LokiLogger.Logger
 
-    return _simloginit(endpoint, app, "prod",
+    return _simloginit(endpoint, app, status,
         Dict{String, String}("SEED" => string(SEED), "datapath" => datapath,
             ((k => string(v)) for (k, v) in PARAMSDICT)...))
 end
@@ -28,4 +30,17 @@ function _simloginit(
     return LokiLogger.Logger(LokiLogger.json, endpoint; 
         labels=Dict{String, String}("host" => gethostname(), "user" => Sys.username(), "lokiLogger" => "LokiLogger.jl", "app" => app, "status" => status,
             ((k => v) for (k, v) in labelsDict)...))
+end
+
+
+function logValues(logger::LokiLogger.Logger, data::Dict{String, Any})
+    json = JSON3.write(data)
+    
+    with_logger(logger) do
+        @info string(json)
+    end
+end
+function logValues(logger::LokiLogger.Logger, column::String, data::Any)
+    logValues(logger, Dict{String, Any}(column => data))
+    
 end

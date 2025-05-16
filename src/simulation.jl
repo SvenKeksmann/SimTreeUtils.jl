@@ -85,12 +85,13 @@ function stsimulate(app::String, simulatefunction; savefile=true)
     end
 
     results = nothing
-    Logging.with_logger(simloginit(app, PARAMSDICT, SEED, datapath)) do
+    internalLogger = simloginit(app, PARAMSDICT, SEED, datapath, "data")
+    Logging.with_logger(simloginit(app, PARAMSDICT, SEED, datapath, "prod")) do
         @debug "Prod-Logger initialized!"
 
         #TEmporary DB Create in study.jl/data (datapath)
         database = CreateBaseTable(OpenDatabase(datapath, "test"), PARAMSDICT, SEED, datapath)
-        results = simulatefunction(database, PARAMSDICT, SEED, datapath)
+        results = simulatefunction(internalLogger, database, PARAMSDICT, SEED, datapath)
         CloseDataBase(database)
         database = nothing
 
