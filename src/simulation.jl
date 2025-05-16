@@ -85,7 +85,7 @@ function stsimulate(app::String, simulatefunction; savefile=true)
     end
 
     results = nothing
-    internalLogger = SimTreeUtils.Logger(logger = simloginit(app, PARAMSDICT, SEED, datapath, "data"))
+    internalLogger = SimTreeUtils.STLogger(logger = simloginit(app, PARAMSDICT, SEED, datapath, "data"))
     Logging.with_logger(simloginit(app, PARAMSDICT, SEED, datapath, "prod")) do
         @debug "Prod-Logger initialized!"
 
