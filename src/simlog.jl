@@ -1,8 +1,7 @@
 function simloginit(
     app::String,
     status::String = "initializing"
-    ;endpoint::String="http://netlabdesk5:3100")::LokiLogger.Logger
-
+    ;endpoint::String="http://netlabdesk5:3100")::STLogger
     
     return _simloginit(endpoint, app, status, Dict{String, String}())
 end
@@ -13,7 +12,7 @@ function simloginit(
     SEED::Int,
     datapath::String,
     status::String="prod"
-    ;endpoint::String="http://netlabdesk5:3100")::LokiLogger.Logger
+    ;endpoint::String="http://netlabdesk5:3100")::STLogger
 
     return _simloginit(endpoint, app, status,
         Dict{String, String}("SEED" => string(SEED), "datapath" => datapath,
@@ -24,12 +23,12 @@ function _simloginit(
     endpoint::String,
     app::String,
     status::String,
-    labelsDict::Dict{String, String})::LokiLogger.Logger
+    labelsDict::Dict{String, String})::STLogger
 
 
-    return LokiLogger.Logger(LokiLogger.json, endpoint; 
+    return STLogger(logger = LokiLogger.Logger(LokiLogger.json, endpoint; 
         labels=Dict{String, String}("host" => gethostname(), "user" => Sys.username(), "lokiLogger" => "LokiLogger.jl", "app" => app, "status" => status,
-            ((k => v) for (k, v) in labelsDict)...))
+            ((k => v) for (k, v) in labelsDict)...)))
 end
 
 struct STLogger

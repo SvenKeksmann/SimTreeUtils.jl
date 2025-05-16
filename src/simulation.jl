@@ -41,7 +41,7 @@ function stsimulate(app::String, simulatefunction; savefile=true)
     datapath = ""
     SIMTREE_RESULTS_PATH = ""
 
-    Logging.with_logger(simloginit(app)) do
+    Logging.with_logger(simloginit(app).logger) do
         @debug "Init-Logger initialized!"
 
         if haskey(ENV, "SIMTREE_RESULTS_PATH")
@@ -85,8 +85,8 @@ function stsimulate(app::String, simulatefunction; savefile=true)
     end
 
     results = nothing
-    internalLogger = SimTreeUtils.STLogger(logger = simloginit(app, PARAMSDICT, SEED, datapath, "data"))
-    Logging.with_logger(simloginit(app, PARAMSDICT, SEED, datapath, "prod")) do
+    internalLogger = simloginit(app, PARAMSDICT, SEED, datapath, "data")
+    Logging.with_logger(simloginit(app, PARAMSDICT, SEED, datapath, "prod").logger) do
         @debug "Prod-Logger initialized!"
 
         #TEmporary DB Create in study.jl/data (datapath)
