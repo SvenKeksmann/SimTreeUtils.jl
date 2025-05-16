@@ -32,15 +32,18 @@ function _simloginit(
             ((k => v) for (k, v) in labelsDict)...))
 end
 
+struct Logger
+    logger::LokiLogger.Logger
+end
 
-function logValues(logger::LokiLogger.Logger, data::Dict{String, Any})
+function logValues(logger::SimTreeUtils.Logger, data::Dict{String, Any})
     json = JSON3.write(data)
     
-    with_logger(logger) do
+    with_logger(logger.logger) do
         @info string(json)
     end
 end
-function logValues(logger::LokiLogger.Logger, column::String, data::Any)
+function logValues(logger::SimTreeUtils.Logger, column::String, data::Any)
     logValues(logger, Dict{String, Any}(column => data))
     
 end

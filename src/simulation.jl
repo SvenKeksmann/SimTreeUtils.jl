@@ -85,12 +85,12 @@ function stsimulate(app::String, simulatefunction; savefile=true)
     end
 
     results = nothing
-    internalLogger = simloginit(app, PARAMSDICT, SEED, datapath, "data")
+    internalLogger = SimTreeUtils.Logger(logger = simloginit(app, PARAMSDICT, SEED, datapath, "data"))
     Logging.with_logger(simloginit(app, PARAMSDICT, SEED, datapath, "prod")) do
         @debug "Prod-Logger initialized!"
 
         #TEmporary DB Create in study.jl/data (datapath)
-        database = CreateBaseTable(OpenDatabase(datapath, "test"), PARAMSDICT, SEED, datapath)
+        database = CreateBaseTable(OpenDatabase(SIMTREE_RESULTS_PATH, "database"), PARAMSDICT, SEED, datapath)
         results = simulatefunction(internalLogger, database, PARAMSDICT, SEED, datapath)
         CloseDataBase(database)
         database = nothing
