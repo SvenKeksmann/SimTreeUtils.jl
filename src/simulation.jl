@@ -37,11 +37,16 @@ $(TYPEDSIGNATURES)
 Wraps the function you want to run through SimTree simulate
 """
 function stsimulate(app::String, simulatefunction::Function; savefile::Bool=true)
+    #Initialize Variables
     SEED = -1
     datapath = ""
     SIMTREE_RESULTS_PATH = ""
+    results = nothing
 
-    session = InitializeSession(app)
+    #Initialize Session
+    session = SimTreeUtils.InitializeSession(app)
+
+    #Initialize Environment
     Logging.with_logger(session.lokiInit) do
         @debug "Init-Logger initialized!"
 
@@ -85,14 +90,17 @@ function stsimulate(app::String, simulatefunction::Function; savefile::Bool=true
         @debug "Init-Logger closed"
     end
 
-    results = nothing
+    #Prepare Session for Production
     SimTreeUtils.PrepareSession(session, SIMTREE_RESULTS_PATH, PARAMSDICT, SEED, datapath)
+
+    #Call Prod-Environment
     Logging.with_logger(session.lokiProd) do
         @debug "Prod-Logger initialized!"
 
         results = simulatefunction(session, PARAMSDICT, SEED, datapath)
         SimTreeUtils.CloseSession(session)
 
+        @debug "Save Data"
         # @show results
         if savefile
             BSON.bson("$SIMTREE_RESULTS_PATH/study.bson", results)
@@ -100,5 +108,6 @@ function stsimulate(app::String, simulatefunction::Function; savefile::Bool=true
         @debug "Prod-Logger closed"
     end
 
+    #Return Data
     return results
 end

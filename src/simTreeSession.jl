@@ -13,7 +13,7 @@ mutable struct SimTreeSession
     duckDBcon::Union{DBInterface.Connection, Nothing}
 end
 
-function InitializeSession(app::String)::SimTreeSession
+function InitializeSession(app::String)::SimTreeUtils.SimTreeSession
     session = SimTreeSession(app, nothing, nothing, nothing, nothing, 
         simloginit(app), nothing, nothing,
         nothing, nothing)
@@ -21,7 +21,7 @@ function InitializeSession(app::String)::SimTreeSession
     return SaveSession(session)
 end
 
-function PrepareSession(session::SimTreeSession, SIMTREE_RESULTS_PATH::String, PARAMSDICT::Dict{String, Any}, SEED::Int, datapath::String)
+function PrepareSession(session::SimTreeUtils.SimTreeSession, SIMTREE_RESULTS_PATH::String, PARAMSDICT::Dict{String, Any}, SEED::Int, datapath::String)
     session.SIMTREE_RESULTS_PATH = SIMTREE_RESULTS_PATH
     session.PARAMSDICT = PARAMSDICT
     session.SEED = SEDD
@@ -37,18 +37,18 @@ function PrepareSession(session::SimTreeSession, SIMTREE_RESULTS_PATH::String, P
     SaveSession(session)
 end
 
-function CloseSession(session::SimTreeSession)
+function CloseSession(session::SimTreeUtils.SimTreeSession)
     CloseDataBase(session)
 
     SaveSession(session)
 end
 
-function SaveSession(session::SimTreeSession)::SimTreeSession
+function SaveSession(session::SimTreeUtils.SimTreeSession)::SimTreeUtils.SimTreeSession
     Base.task_local_storage("session", session)
     return session
 end
 
-function GetSession(;session::Union{SimTreeSession, Nothing})::SimTreeSession
+function GetSession(;session::Union{SimTreeUtils.SimTreeSession, Nothing})::SimTreeUtils.SimTreeSession
     if session == nothing
         session = Base.task_local_storage("session")
         session === nothing && @error "No active Session found!"
