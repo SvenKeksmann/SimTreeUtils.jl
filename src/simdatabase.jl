@@ -85,7 +85,7 @@ function AddRow(table::stDataTable, data::Vector)
 end
 function AddRow(table::stDataTable, data::Dict{String, Any})
     columns = join(["$v AS $k" for (k, v) in data], ", ")
-    DBInterface.execute(table.session.duckDBcon, "INSERT INTO $(table.tableName) VALUES(SELECT $columns)")
+    DBInterface.execute(table.session.duckDBcon, "INSERT INTO $(table.tableName) BY NAME (SELECT $columns)")
 end
 
 #Aufruf SelectData mit Open/Close-DB
