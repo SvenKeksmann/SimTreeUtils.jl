@@ -14,7 +14,7 @@ mutable struct SimTreeSession
 end
 
 function InitializeSession(app::String)::SimTreeUtils.SimTreeSession
-    session = SimTreeSession(app, nothing, nothing, nothing, nothing, 
+    session = SimTreeUtils.SimTreeSession(app, nothing, nothing, nothing, nothing, 
         simloginit(app), nothing, nothing,
         nothing, nothing)
 
