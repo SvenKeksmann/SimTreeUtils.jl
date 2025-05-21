@@ -51,8 +51,8 @@ macro saveDuckDB(var)
 
         session = SimTreeUtils.GetSession(nothing)
         table = SimTreeUtils.CreateTable(session, _name, Dict{String, Type}(_name => _type,
-            ((k => typeof(v)) for (k, v) in session.PARAMSDICT)...)))
-        SimTreeUtils.AddRow(table, [_val, ((v) for (k, v) in labelsDict)...)])
+            ((k => typeof(v)) for (k, v) in session.PARAMSDICT)...))
+        SimTreeUtils.AddRow(table, [_val, ((k => typeof(v)) for (k, v) in session.PARAMSDICT)...])
     end)
 end
 
