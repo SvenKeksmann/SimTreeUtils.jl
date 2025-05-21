@@ -24,7 +24,7 @@ end
 function PrepareSession(session::SimTreeUtils.SimTreeSession, SIMTREE_RESULTS_PATH::String, PARAMSDICT::Dict{String, Any}, SEED::Int, datapath::String)
     session.SIMTREE_RESULTS_PATH = SIMTREE_RESULTS_PATH
     session.PARAMSDICT = PARAMSDICT
-    session.SEED = SEDD
+    session.SEED = SEED
     session.datapath = datapath
 
     session.lokiProd = simloginit(session, "prod")
