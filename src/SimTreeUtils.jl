@@ -16,7 +16,7 @@ using JSON3
 
 using Plots
 
-export copyresults, findrelpaths, getparameters, simsnum, getsims, getsimspath, SimTreeSession, logValues
+export copyresults, findrelpaths, getparameters, simsnum, getsims, getsimspath, SimTreeSession, logValues, saveDuckDB
 
 include("simTreeSession.jl")
 

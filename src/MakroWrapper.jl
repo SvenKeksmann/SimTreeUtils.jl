@@ -35,7 +35,7 @@ macro logValues(var)
         dict = Dict{String, Any}(_name => _val)
 
         session = SimTreeUtils.GetSession(nothing)
-        SimTreeUtils.logInit(session, dict; level=Logging.Info)
+        SimTreeUtils.logData(session, dict; level=Logging.Info)
     
     end)
 
