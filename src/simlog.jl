@@ -31,9 +31,19 @@ end
 function logInit(session::SimTreeUtils.SimTreeSession, data::String; level::Logging.LogLevel=Logging.Info)
     _lokiLog(session.lokiInit, data, level)
 end
+function logInit(session::SimTreeUtils.SimTreeSession, data::Dict{String, Any}; level::Logging.LogLevel=Logging.Info)
+    json = JSON3.write(data)
+
+    _lokiLog(session.lokiInit, string(json), level)
+end
 #Logging der Produktiv-Ereignisse
 function logProd(session::SimTreeUtils.SimTreeSession, data::String; level::Logging.LogLevel=Logging.Info)
     _lokiLog(session.lokiProd, data, level)
+end
+function logProd(session::SimTreeUtils.SimTreeSession, data::Dict{String, Any}; level::Logging.LogLevel=Logging.Info)
+    json = JSON3.write(data)
+
+    _lokiLog(session.lokiProd, string(json), level)
 end
 #Logging von Rohdaten als JSON
 function logData(session::SimTreeUtils.SimTreeSession, data::Dict{String, Any}; level::Logging.LogLevel=Logging.Info)

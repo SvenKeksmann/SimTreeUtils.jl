@@ -95,11 +95,11 @@ function SelectData(session::SimTreeUtils.SimTreeSession, table::String; limit::
 end
 
 #Aufruf ViewDBSchema mit Open/Close-DB
-function ViewDBSchema(session::SimTreeUtils.SimTreeSession)
-    #database = OpenDatabase(datapath::String, dbname::String)
-    ViewDBSchema(session)
-    CloseDataBase(session)
-end
+#function ViewDBSchema(session::SimTreeUtils.SimTreeSession)
+#    #database = OpenDatabase(datapath::String, dbname::String)
+#    ViewDBSchema(session)
+#    CloseDataBase(session)
+#end
 function ViewDBSchema(session::SimTreeUtils.SimTreeSession)
     tables = DBInterface.execute(session.duckDBcon, "SHOW ALL TABLES") |> DataFrame
     println(tables)

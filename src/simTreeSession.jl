@@ -48,10 +48,14 @@ function SaveSession(session::SimTreeUtils.SimTreeSession)::SimTreeUtils.SimTree
     return session
 end
 
-function GetSession(;session::Union{SimTreeUtils.SimTreeSession, Nothing})::SimTreeUtils.SimTreeSession
+function GetSession()::SimTreeUtils.SimTreeSession
+    session = Base.task_local_storage("session")
+    session === nothing && @error "No active Session found!"
+    return session
+end
+function GetSession(session::Union{SimTreeUtils.SimTreeSession, Nothing})::SimTreeUtils.SimTreeSession
     if session == nothing
-        session = Base.task_local_storage("session")
-        session === nothing && @error "No active Session found!"
+        return GetSession()
     end
     return session
 end
