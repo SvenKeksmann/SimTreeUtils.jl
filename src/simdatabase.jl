@@ -84,24 +84,24 @@ function AddRow(table::stDataTable, data::Vector)
 end
 
 #Aufruf SelectData mit Open/Close-DB
-function SelectData(datapath::String, dbname::String, table::String; limit::Integer=8, Columns::String="*")::DataFrame
-    database = OpenDatabase(datapath::String, dbname::String)
-    data = SelectData(database, table; limit, Columns)
-    CloseDataBase(database)
-    return data
-end
-function SelectData(database::stDataBase, table::String; limit::Integer=8, Columns::String="*")::DataFrame
-    return DBInterface.execute(database.con, "SELECT $(Columns) FROM $(table) LIMIT $(limit);") |> DataFrames.DataFrame
+#function SelectData(session::SimTreeUtils.SimTreeSession, table::String; limit::Integer=8, Columns::String="*")::DataFrame
+#    #database = OpenDatabase(datapath::String, dbname::String)
+#    data = SelectData(session, table; limit, Columns)
+#    CloseDataBase(session)
+#    return data
+#end
+function SelectData(session::SimTreeUtils.SimTreeSession, table::String; limit::Integer=8, Columns::String="*")::DataFrame
+    return DBInterface.execute(session.duckDBcon, "SELECT $(Columns) FROM $(table) LIMIT $(limit);") |> DataFrames.DataFrame
 end
 
 #Aufruf ViewDBSchema mit Open/Close-DB
-function ViewDBSchema(datapath::String, dbname::String)
-    database = OpenDatabase(datapath::String, dbname::String)
-    ViewDBSchema(database)
-    CloseDataBase(database)
+function ViewDBSchema(session::SimTreeUtils.SimTreeSession)
+    #database = OpenDatabase(datapath::String, dbname::String)
+    ViewDBSchema(session)
+    CloseDataBase(session)
 end
-function ViewDBSchema(database::stDataBase)
-    tables = DBInterface.execute(database.con, "SHOW ALL TABLES") |> DataFrame
+function ViewDBSchema(session::SimTreeUtils.SimTreeSession)
+    tables = DBInterface.execute(session.duckDBcon, "SHOW ALL TABLES") |> DataFrame
     println(tables)
     for tableRow in eachrow(tables)
         table = string(tableRow[:name])
@@ -110,18 +110,18 @@ function ViewDBSchema(database::stDataBase)
         else
             println("Show Table '$table")
             
-            schema = DBInterface.execute(database.con, "DESCRIBE $(table)") |> DataFrame
+            schema = DBInterface.execute(session.duckDBcon, "DESCRIBE $(table)") |> DataFrame
             println(schema)
         end
     end
 end
 
 #Temporary easy plotting function
-function plotXY(datapath::String, dbname::String, table::String, colX::String, colY::Matrix{String}; limit::Integer=8)
-    database = OpenDatabase(datapath::String, dbname::String)
-    x = SelectData(database, table; limit, Columns=colX)
-    y = SelectData(database, table; limit, Columns=join(colY, ", "))
-    CloseDataBase(database)
+function plotXY(session::SimTreeUtils.SimTreeSession, table::String, colX::String, colY::Matrix{String}; limit::Integer=8)
+    #database = OpenDatabase(datapath::String, dbname::String)
+    x = SelectData(session, table; limit, Columns=colX)
+    y = SelectData(session, table; limit, Columns=join(colY, ", "))
+    CloseDataBase(session)
     
-    Plots.plot(Matrix(x), Matrix(y), title="$dbname/$table", labels=colY, xlabel="$colX")
+    Plots.plot(Matrix(x), Matrix(y), title="$(session.app)/$table", labels=colY, xlabel="$colX")
 end
