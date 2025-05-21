@@ -44,6 +44,21 @@ macro logValues(var)
     #    SimTreeUtils.logInit(session, dict, Logging.Info)
     #end)
 end
+macro saveDuckDB(var)
+    name = string(var)
+
+    esc(quote
+        local _val = $var
+        local _name = $name
+        local _type = typeof(_val)
+
+        #dict = Dict{String, Any}(_name => _val)
+
+        session = SimTreeUtils.GetSession(nothing)
+        table = SimTreeUtils.CreateTable(session, _name, Dict{String, Type}(_name => _type))
+        SimTreeUtils.AddRow(table, [_val])
+    end)
+end
 
 #https://discourse.julialang.org/t/macro-to-convert-list-of-variables-to-dict-keyed-by-variable-name/8755/2
 macro makedict(args...)

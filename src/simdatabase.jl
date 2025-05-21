@@ -70,7 +70,7 @@ end
 function AddTableColumn(table::stDataTable, column::String, columntype::Type)::stDataTable
     sqltype = get(julia_to_sql, columntype, "TEXT")
 
-    DBInterface.execute(table.database.con, "ALTER TABLE $(table.tableName) ADD COLUMN IF NOT EXISTS $column $sqltype")
+    DBInterface.execute(table.session.duckDBcon, "ALTER TABLE $(table.tableName) ADD COLUMN IF NOT EXISTS $column $sqltype")
 
     if !haskey(table.columns, column)
         table.columns[column] = columntype
@@ -80,7 +80,7 @@ end
 
 function AddRow(table::stDataTable, data::Vector)
     columns = join([v for (v) in data], ", ")
-    DBInterface.execute(table.database.con, "INSERT INTO $(table.tableName) VALUES($columns)")
+    DBInterface.execute(table.session.duckDBcon, "INSERT INTO $(table.tableName) VALUES($columns)")
 end
 
 #Aufruf SelectData mit Open/Close-DB
@@ -112,6 +112,8 @@ function ViewDBSchema(session::SimTreeUtils.SimTreeSession)
             
             schema = DBInterface.execute(session.duckDBcon, "DESCRIBE $(table)") |> DataFrame
             println(schema)
+
+            println(SelectData(session, table))
         end
     end
 end
