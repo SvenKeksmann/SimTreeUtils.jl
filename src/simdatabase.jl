@@ -83,6 +83,10 @@ function AddRow(table::stDataTable, data::Vector)
     columns = join([v for (v) in data], ", ")
     DBInterface.execute(table.session.duckDBcon, "INSERT INTO $(table.tableName) VALUES($columns)")
 end
+function AddRow(table::stDataTable, data::Dict{String, Any})
+    columns = join(["$v AS $k" for (k, v) in data], ", ")
+    DBInterface.execute(table.session.duckDBcon, "INSERT INTO $(table.tableName) VALUES(SELECT $columns)")
+end
 
 #Aufruf SelectData mit Open/Close-DB
 #function SelectData(session::SimTreeUtils.SimTreeSession, table::String; limit::Integer=8, Columns::String="*")::DataFrame
