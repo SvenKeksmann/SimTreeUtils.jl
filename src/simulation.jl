@@ -98,6 +98,8 @@ function stsimulate(app::String, simulatefunction::Function; savefile::Bool=true
         @debug "Prod-Logger initialized!"
 
         results = simulatefunction(session, PARAMSDICT, SEED, datapath)
+        SimTreeUtils.ViewDBSchema(session)
+
         SimTreeUtils.CloseSession(session)
 
         @debug "Save Data"
