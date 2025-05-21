@@ -38,11 +38,6 @@ macro logValues(var)
         SimTreeUtils.logData(session, dict; level=Logging.Info)
     
     end)
-
-    #esc(quote
-    #    session = SimTreeUtils.GetSession(nothing)
-    #    SimTreeUtils.logInit(session, dict, Logging.Info)
-    #end)
 end
 macro saveDuckDB(var)
     name = string(var)
@@ -55,8 +50,9 @@ macro saveDuckDB(var)
         #dict = Dict{String, Any}(_name => _val)
 
         session = SimTreeUtils.GetSession(nothing)
-        table = SimTreeUtils.CreateTable(session, _name, Dict{String, Type}(_name => _type))
-        SimTreeUtils.AddRow(table, [_val])
+        table = SimTreeUtils.CreateTable(session, _name, Dict{String, Type}(_name => _type,
+            ((k => typeof(v)) for (k, v) in session.PARAMSDICT)...)))
+        SimTreeUtils.AddRow(table, [_val, ((v) for (k, v) in labelsDict)...)])
     end)
 end
 
