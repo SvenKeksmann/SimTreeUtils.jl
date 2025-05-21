@@ -16,7 +16,7 @@ end
 #
 #    return stDataBase(dbFile, con, "")
 #end
-function CloseDataBase(session::SimTreeSession)
+function CloseDataBase(session::SimTreeUtils.SimTreeSession)
     if session.duckDBfile == ":memory:"
         @error "Not implemented!"
         return
@@ -33,7 +33,7 @@ function CloseDataBase(session::SimTreeSession)
     session.duckDBcon = nothing
 end
 
-function CreateBaseTable(session::SimTreeSession)
+function CreateBaseTable(session::SimTreeUtils.SimTreeSession)
 
     CreateTable(session, "base", 
         Dict{String, Type}("SEED" => Int,
@@ -51,7 +51,7 @@ const julia_to_sql = Dict(
     Missing => "NULL"
 )
 
-function CreateTable(session::SimTreeSession,
+function CreateTable(session::SimTreeUtils.SimTreeSession,
     tableName::String,
     columns::Dict{String, Type})::stDataTable
 

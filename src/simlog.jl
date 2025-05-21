@@ -6,7 +6,7 @@ function simloginit(
     return _simloginit(endpoint, app, status, Dict{String, String}())
 end
 
-function simloginit(session::SimTreeSession,
+function simloginit(session::SimTreeUtils.SimTreeSession,
     status::String="prod"
     ;endpoint::String="http://netlabdesk5:3100")::LokiLogger.Logger
 
