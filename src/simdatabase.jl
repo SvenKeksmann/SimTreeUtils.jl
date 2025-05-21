@@ -53,7 +53,7 @@ const julia_to_sql = Dict(
 
 function CreateTable(session::SimTreeUtils.SimTreeSession,
     tableName::String,
-    columns::Dict{String, Type})::stDataTable
+    columns::OrderedDict{String, Type})::stDataTable
 
     createColumns = join(["$k $(get(julia_to_sql, v, "TEXT"))" for (k, v) in columns], ", ")
 
@@ -71,6 +71,7 @@ function AddTableColumn(table::stDataTable, column::String, columntype::Type)::s
     sqltype = get(julia_to_sql, columntype, "TEXT")
 
     DBInterface.execute(table.session.duckDBcon, "ALTER TABLE $(table.tableName) ADD COLUMN IF NOT EXISTS $column $sqltype")
+    println()
 
     if !haskey(table.columns, column)
         table.columns[column] = columntype
@@ -95,8 +96,8 @@ function SelectData(session::SimTreeUtils.SimTreeSession, table::String; limit::
 end
 
 #Aufruf ViewDBSchema mit Open/Close-DB
-#function ViewDBSchema(session::SimTreeUtils.SimTreeSession)
-#    #database = OpenDatabase(datapath::String, dbname::String)
+#function ViewDBSchema(db::string)
+#    database = OpenDatabase(datapath::String, dbname::String)
 #    ViewDBSchema(session)
 #    CloseDataBase(session)
 #end
