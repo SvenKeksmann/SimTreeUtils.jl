@@ -1,55 +1,44 @@
-mutable struct stDataBase
-    dbFile::String
-    con::Union{DBInterface.Connection, Nothing}
-    simulationprefix::String
-end
 mutable struct stDataTable
     database::stDataBase
     tableName::String
     columns::Dict{String, Type}
 end
 
-function OpenDatabase(datapath::String, dbname::String)::stDataBase
-    dbFile = "$datapath/$dbname.duckdb"
-    con = DBInterface.connect(DuckDB.DB, dbFile)
-
-    return stDataBase(dbFile, con, "")
-end
-function OpenInMemoryDB()::stDataBase
-    dbFile = ":memory:"
-    con = DBInterface.connect(DuckDB.DB, dbFile)
-
-    return stDataBase(dbFile, con, "")
-end
-function CloseDataBase(database::stDataBase; datapath::String="", dbname::String="")
-    if database.dbFile == ":memory:"
-        if datapath=="" || dbname==""
-            @error "InMemory-Data will be Lost!"
-        else
-            database.dbFile = "$datapath/$dbname.duckdb"
-            DBInterface.execute(database.con, "ATTACH '$(database.dbFile)'")
-            DBInterface.execute(database.con, "COPY FROM DATABASE memory TO $dbname")
-            DBInterface.execute(database.con, "DETACH $dbname")
-        end
-        #implement DB Save
+#function OpenDatabase(session::SimTreeSession, datapath::String, dbname::String)
+#    session.duckDBfile = "$datapath/$dbname.duckdb"
+#    session.duckDBcon = DBInterface.connect(DuckDB.DB, dbFile)
+#
+#    return stDataBase(dbFile, con, "")
+#end
+#function OpenInMemoryDB()::stDataBase
+#    dbFile = ":memory:"
+#    con = DBInterface.connect(DuckDB.DB, dbFile)
+#
+#    return stDataBase(dbFile, con, "")
+#end
+function CloseDataBase(session::SimTreeSession)
+    if session.duckDBfile == ":memory:"
+        @error "Not implemented!"
+        return
+        #if datapath=="" || dbname==""
+        #    @error "InMemory-Data will be Lost!"
+        #else
+        #    session.duckDBfile = "$(session.SIMTREE_RESULTS_PATH))/$(session.app).duckdb"
+        #    DBInterface.execute(session.duckDBcon, "ATTACH '$(session.duckDBfile)'")
+        #    DBInterface.execute(session.duckDBcon, "COPY FROM DATABASE memory TO $(session.app))")
+        #    DBInterface.execute(session.duckDBcon, "DETACH $(session.app)")
+        #end
     end
-    DBInterface.close(database.con)
-    database.con = nothing
+    DBInterface.close(session.duckDBcon)
+    session.duckDBcon = nothing
 end
 
-function CreateBaseTable(
-    database::stDataBase,
-    PARAMSDICT::Dict{String, Any},
-    SEED::Int,
-    datapath::String)::stDataBase
+function CreateBaseTable(session::SimTreeSession)
 
-    CreateTable(database, "base", 
+    CreateTable(session, "base", 
         Dict{String, Type}("SEED" => Int,
         "datapath" => String,
-        ((k => typeof(v)) for (k, v) in PARAMSDICT)...))
-
-    database.simulationprefix = ""
-    return database
+        ((k => typeof(v)) for (k, v) in session.PARAMSDICT)...))
 end
 
 const julia_to_sql = Dict(
@@ -62,15 +51,15 @@ const julia_to_sql = Dict(
     Missing => "NULL"
 )
 
-function CreateTable(database::stDataBase,
+function CreateTable(session::SimTreeSession,
     tableName::String,
     columns::Dict{String, Type})::stDataTable
 
     createColumns = join(["$k $(get(julia_to_sql, v, "TEXT"))" for (k, v) in columns], ", ")
 
-    DBInterface.execute(database.con, "CREATE TABLE IF NOT EXISTS $tableName ($createColumns)")
+    DBInterface.execute(session.duckDBcon, "CREATE TABLE IF NOT EXISTS $tableName ($createColumns)")
 
-    datatable = stDataTable(database, tableName, columns)
+    datatable = stDataTable(session, tableName, columns)
     #Alter Table & Create new Columns, if TABLE exists
     for (k, v) in columns
         datatable = AddTableColumn(datatable, k, v)

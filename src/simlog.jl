@@ -6,17 +6,13 @@ function simloginit(
     return _simloginit(endpoint, app, status, Dict{String, String}())
 end
 
-function simloginit(
-    app::String,
-    PARAMSDICT::Dict{String, Any},
-    SEED::Int,
-    datapath::String,
+function simloginit(session::SimTreeSession,
     status::String="prod"
     ;endpoint::String="http://netlabdesk5:3100")::LokiLogger.Logger
 
-    return _simloginit(endpoint, app, status,
-        Dict{String, String}("SEED" => string(SEED), "datapath" => datapath,
-            ((k => string(v)) for (k, v) in PARAMSDICT)...))
+    return _simloginit(endpoint, session.app, status,
+        Dict{String, String}("SEED" => string(session.SEED), "datapath" => session.datapath,
+            ((k => string(v)) for (k, v) in session.PARAMSDICT)...))
 end
 
 function _simloginit(
@@ -31,28 +27,22 @@ function _simloginit(
             ((k => v) for (k, v) in labelsDict)...))
 end
 
-mutable struct STLogger
-    initLogger::LokiLogger.Logger
-    prodLogger::Union{LokiLogger.Logger, Nothing}
-    dataLogger::Union{LokiLogger.Logger, Nothing}
-end
-
 #Logging der Init-Ereignisse
-function logInit(STLogger::SimTreeUtils.STLogger, data::String; level::Logging.LogLevel=Logging.Info)
-    _lokiLog(STLogger.initLogger, data, level)
+function logInit(session::SimTreeUtils.SimTreeSession, data::String; level::Logging.LogLevel=Logging.Info)
+    _lokiLog(session.lokiInit, data, level)
 end
 #Logging der Produktiv-Ereignisse
-function logProd(STLogger::SimTreeUtils.STLogger, data::String; level::Logging.LogLevel=Logging.Info)
-    _lokiLog(STLogger.prodLogger, data, level)
+function logProd(session::SimTreeUtils.SimTreeSession, data::String; level::Logging.LogLevel=Logging.Info)
+    _lokiLog(session.lokiProd, data, level)
 end
 #Logging von Rohdaten als JSON
-function logData(STLogger::SimTreeUtils.STLogger, data::Dict{String, Any}; level::Logging.LogLevel=Logging.Info)
+function logData(session::SimTreeUtils.SimTreeSession, data::Dict{String, Any}; level::Logging.LogLevel=Logging.Info)
     json = JSON3.write(data)
     
-    _lokiLog(STLogger.dataLogger, string(json), level)
+    _lokiLog(session.lokiData, string(json), level)
 end
-function logData(STLogger::SimTreeUtils.STLogger, column::String, data::Any; level::Logging.LogLevel=Logging.Info)
-    logData(STLogger, Dict{String, Any}(column => data); level)
+function logData(session::SimTreeUtils.SimTreeSession, column::String, data::Any; level::Logging.LogLevel=Logging.Info)
+    logData(session, Dict{String, Any}(column => data); level)
 end
 
 function _lokiLog(logger::LokiLogger.Logger, data::String, level::Logging.LogLevel)

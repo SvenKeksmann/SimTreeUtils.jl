@@ -36,13 +36,13 @@ $(TYPEDSIGNATURES)
 
 Wraps the function you want to run through SimTree simulate
 """
-function stsimulate(app::String, simulatefunction; savefile=true)
+function stsimulate(app::String, simulatefunction::Function; savefile::Bool=true)
     SEED = -1
     datapath = ""
     SIMTREE_RESULTS_PATH = ""
 
-    LogWrapper = SimTreeUtils.STLogger(simloginit(app), nothing, nothing)
-    Logging.with_logger(LogWrapper.initLogger) do
+    session = InitializeSession(app)
+    Logging.with_logger(session.lokiInit) do
         @debug "Init-Logger initialized!"
 
         if haskey(ENV, "SIMTREE_RESULTS_PATH")
@@ -86,16 +86,12 @@ function stsimulate(app::String, simulatefunction; savefile=true)
     end
 
     results = nothing
-    LogWrapper.prodLogger = simloginit(app, PARAMSDICT, SEED, datapath, "prod")
-    LogWrapper.dataLogger = simloginit(app, PARAMSDICT, SEED, datapath, "data")
-    Logging.with_logger(LogWrapper.prodLogger) do
+    SimTreeUtils.PrepareSession(session, SIMTREE_RESULTS_PATH, PARAMSDICT, SEED, datapath)
+    Logging.with_logger(session.lokiProd) do
         @debug "Prod-Logger initialized!"
 
-        #TEmporary DB Create in study.jl/data (datapath)
-        database = CreateBaseTable(OpenDatabase(SIMTREE_RESULTS_PATH, "database"), PARAMSDICT, SEED, datapath)
-        results = simulatefunction(LogWrapper, database, PARAMSDICT, SEED, datapath)
-        CloseDataBase(database)
-        database = nothing
+        results = simulatefunction(session, PARAMSDICT, SEED, datapath)
+        SimTreeUtils.CloseSession(session)
 
         # @show results
         if savefile

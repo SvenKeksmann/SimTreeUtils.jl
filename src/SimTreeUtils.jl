@@ -23,5 +23,7 @@ include("loaddata.jl")
 include("metaanalysis.jl")
 include("simlog.jl")
 include("simdatabase.jl")
+include("simTreeSession.jl")
+include("MakroWrapper.jl")
 
 end
