@@ -1,5 +1,5 @@
 mutable struct stDataTable
-    database::stDataBase
+    database::SimTreeUtils.SimTreeSession
     tableName::String
     columns::Dict{String, Type}
 end
