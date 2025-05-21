@@ -18,12 +18,13 @@ using Plots
 
 export copyresults, findrelpaths, getparameters, simsnum, getsims, getsimspath
 
+include("simTreeSession.jl")
+
 include("simulation.jl")
 include("loaddata.jl")
 include("metaanalysis.jl")
 include("simlog.jl")
 include("simdatabase.jl")
-include("simTreeSession.jl")
 include("MakroWrapper.jl")
 
 end
