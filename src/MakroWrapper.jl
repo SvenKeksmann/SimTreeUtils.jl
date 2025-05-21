@@ -25,7 +25,7 @@
 #end
 #;session::Union{SimTreeUtils.SimTreeSession, Nothing}=nothing, level::Logging.LogLevel=Logging.Info
 
-macro testlog(var1, var2)
+macro logValues(var1, var2)
     name1 = string(var1)
     name2 = string(var2)
 
@@ -37,9 +37,7 @@ macro testlog(var1, var2)
         local _name2 = $name2
 
         dict = Dict{String, Any}(_name1 => _val1, _name2 => _val2)
-
-        println(dict)
-    
+        SimTreeUtils._logValues(dict)
     end)
 end
 macro logValues(var)
@@ -51,10 +49,12 @@ macro logValues(var)
 
         dict = Dict{String, Any}(_name => _val)
 
-        session = SimTreeUtils.GetSession(nothing)
-        SimTreeUtils.logData(session, dict; level=Logging.Info)
-    
+        SimTreeUtils._logValues(dict)
     end)
+end
+function _logValues(data::Dict{String, Any})
+    session = SimTreeUtils.GetSession(nothing)
+    SimTreeUtils.logData(session, dict; level=Logging.Info)
 end
 macro saveDuckDB(var)
     name = string(var)
@@ -63,9 +63,11 @@ macro saveDuckDB(var)
         local _val = $var
         local _name = $name
         local _type = typeof(_val)
-        
+        local tableName = _name
+
+
         session = SimTreeUtils.GetSession(nothing)
-        table = SimTreeUtils.CreateTable(session, _name, OrderedDict{String, Type}(_name => _type,
+        table = SimTreeUtils.CreateTable(session, tableName, OrderedDict{String, Type}(_name => _type,
             ((k => typeof(v)) for (k, v) in session.PARAMSDICT)...))
         dict = Dict{String, Any}(_name => _val, 
             ((k => isa(v, String) ? "'$v'" : v) for (k, v) in session.PARAMSDICT)...)
