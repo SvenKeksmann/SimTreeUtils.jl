@@ -54,7 +54,7 @@ macro logValues(var)
 end
 function _logValues(data::Dict{String, Any})
     session = SimTreeUtils.GetSession(nothing)
-    SimTreeUtils.logData(session, dict; level=Logging.Info)
+    SimTreeUtils.logData(session, data; level=Logging.Info)
 end
 macro saveDuckDB(var)
     name = string(var)
