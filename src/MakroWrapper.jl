@@ -25,6 +25,30 @@
 #end
 #;session::Union{SimTreeUtils.SimTreeSession, Nothing}=nothing, level::Logging.LogLevel=Logging.Info
 
+macro testlogValues(args...)
+    dict = Dict{String, Any}()
+    println(args)
+
+    #esc(quote
+    #    for arg in $args
+    #        name = string($arg)
+    #        println("$name - $arg - $(typeof(arg))")
+            
+                #local _val = $arg
+                #local _name = $name
+                #println("$_name > $_val")
+
+                #dict = Dict{String, Any}(_name => _val)
+                #SimTreeUtils._logValues(dict)
+            #dict[name] = val
+    #    end
+    #end)
+
+    #println(dict)
+end
+macro getValue(val)
+    return esc(val)
+end
 macro logValues(var1, var2)
     name1 = string(var1)
     name2 = string(var2)

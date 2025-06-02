@@ -24,8 +24,9 @@ include("simTreeSession.jl")
 include("simulation.jl")
 include("loaddata.jl")
 include("metaanalysis.jl")
-include("simlog.jl")
-include("simdatabase.jl")
+include("dbhandling_duckdb.jl")
+include("dbhandling_sqlite.jl")
+include("loghandling_loki.jl")
 include("MakroWrapper.jl")
 
 end
